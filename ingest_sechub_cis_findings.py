@@ -15,6 +15,8 @@ region = 'us-west-2'
 argparser = argparse.ArgumentParser()
 argparser.add_argument('-r','--region', nargs='?', const='NO', default=region, help='The AWS Region where Security Hub is running')
 argparser.add_argument('-d', '--debug', nargs='?', const='NO', help='Debug log mode. WARNING!!! Log file can be very large!')
+argparser.add_argument('-h', '--host', nargs='?', const='NO', default=MONGO_HOST, help='Mongo Host')
+argparser.add_argument('-p', '--port', nargs='?', const='NO', default=MONGO_PORT, help='Mongo Port')
 args = argparser.parse_args()
 
 if args.debug:
