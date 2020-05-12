@@ -28,7 +28,7 @@ def setup_mongo(mongo_host, mongo_port):
 def insert_finding_metadata_into_db(findings_col, findings_dict):
   [ ( findings_col.insert_one(x) ) for x in findings_dict.get('Findings') if not findings_col.find_one({"Title": x.get('Title')}) ]
   findings_count = findings_col.count()
-  print('Compliance Metadat Controls in collection: ' + str(findings_count))
+  print('Compliance Metadata Controls in collection: ' + str(findings_count))
   return findings_count
 
 def insert_finding_status_into_db(findings_col, findings_dict):

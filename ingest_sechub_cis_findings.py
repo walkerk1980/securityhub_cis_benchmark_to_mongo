@@ -15,7 +15,6 @@ region = 'us-west-2'
 
 for arg in ['mongo_host', 'mongo_port', 'region']:
   if os.environ.get(arg):
-    print(os.environ.get(arg))
     cmd = arg + ' = os.environ.get(\'' + arg + '\')'
     exec(cmd)
 
