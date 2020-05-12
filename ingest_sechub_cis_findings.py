@@ -15,8 +15,8 @@ region = 'us-west-2'
 argparser = argparse.ArgumentParser()
 argparser.add_argument('-r','--region', nargs='?', const='NO', default=region, help='The AWS Region where Security Hub is running')
 argparser.add_argument('-d', '--debug', nargs='?', const='NO', help='Debug log mode. WARNING!!! Log file can be very large!')
-argparser.add_argument('-h', '--host', nargs='?', const='NO', default=MONGO_HOST, help='Mongo Host')
-argparser.add_argument('-p', '--port', nargs='?', const='NO', default=MONGO_PORT, help='Mongo Port')
+argparser.add_argument('-H', '--host', nargs='?', const='NO', default=MONGO_HOST, help='Mongo Host')
+argparser.add_argument('-P', '--port', nargs='?', const='NO', default=MONGO_PORT, help='Mongo Port')
 args = argparser.parse_args()
 
 if args.debug:
@@ -100,7 +100,13 @@ def populate_periodic_account_status(key_array, collection):
     insert_finding_status_into_db(collection, findings_document)
     #print(findings_document)
 
-if __name__ == '__main__':
+def populate_db():
   initial_db_populate(finding_metadata_we_care_about, cis_bm_metadata)
   populate_periodic_account_status(finding_status_keys, findings_col)
   update_account_list_col_in_db(findings_col, account_list)
+
+if __name__ == '__main__':
+  populate_db()
+
+def lambda_handler():
+  populate_db()
