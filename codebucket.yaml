@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: securityhub-mongo-ingestor-codebucket
+Conditions:
+  GovCloudCondition: !Equals
+    - !Ref 'AWS::Region'
+    - us-gov-west-1
+Resources:
+  SecurityHubMongoIngestorCodeBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Join
+        [
+          "-",
+          [
+              !Ref 'AWS::StackName',
+              !Ref 'AWS::AccountId'
+          ]
+        ]
+      VersioningConfiguration:
+        Status: Enabled
+Outputs:
+  CodeBucketName:
+    Description: SecurityHubMongoIngestorCodeBucket
+    Value: !Ref SecurityHubMongoIngestorCodeBucket
+    Export:
+      Name: CodeBucketName

@@ -1,0 +1,40 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: ingest security hub findings into mongodb
+Conditions:
+  GovCloudCondition: !Equals
+    - !Ref 'AWS::Region'
+    - us-gov-west-1
+Resources:
+  CreateChefComponents:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: SecurityHubMongoIngestor
+      Code: chef_component_lambda_code.zip
+      Description: Ingest Security Hub Findings into MongoDB
+      Handler: lambda_function.lambda_handler
+      MemorySize: 128
+      Role: !GetAtt
+        - LambdaRole
+        - Arn
+      Runtime: python3.8
+      Timeout: 300
+  LambdaRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      Path: /service-role/
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      ManagedPolicyArns:
+          - >-
+            arn:${Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+          - Partition: !If
+              - GovCloudCondition
+              - aws-us-gov
+              - aws
