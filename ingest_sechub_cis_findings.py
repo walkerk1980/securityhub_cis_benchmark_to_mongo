@@ -5,24 +5,31 @@ from datetime import date
 from datetime import timedelta
 import argparse
 import logging
+import os
 import boto3
 from mongo_functions import *
 
-MONGO_HOST = 'localhost'
-MONGO_PORT = 27017
+mongo_host = 'localhost'
+mongo_port = 27017
 region = 'us-west-2'
+
+for arg in ['mongo_host', 'mongo_port', 'region']:
+  if os.environ.get(arg):
+    print(os.environ.get(arg))
+    cmd = arg + ' = os.environ.get(\'' + arg + '\')'
+    exec(cmd)
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument('-r','--region', nargs='?', const='NO', default=region, help='The AWS Region where Security Hub is running')
 argparser.add_argument('-d', '--debug', nargs='?', const='NO', help='Debug log mode. WARNING!!! Log file can be very large!')
-argparser.add_argument('-H', '--host', nargs='?', const='NO', default=MONGO_HOST, help='Mongo Host')
-argparser.add_argument('-P', '--port', nargs='?', const='NO', default=MONGO_PORT, help='Mongo Port')
+argparser.add_argument('-H', '--host', nargs='?', const='NO', default=mongo_host, help='Mongo Host')
+argparser.add_argument('-P', '--port', nargs='?', const='NO', default=mongo_port, help='Mongo Port')
 args = argparser.parse_args()
 
 if args.debug:
     logging.basicConfig(format = '%(asctime)s %(name)s %(levelname)s %(message)s', filename = 'ingestor.log', filemode='w', level = logging.DEBUG)
 
-collections = setup_mongo(MONGO_HOST, MONGO_PORT)
+collections = setup_mongo(mongo_host, mongo_port)
 
 cis_bm_metadata = collections.get('cis_bm_metadata')
 account_list = collections.get('account_list')
