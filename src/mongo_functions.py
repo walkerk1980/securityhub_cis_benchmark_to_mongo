@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import logging
+from datetime import date
 try:
   from pymongo import MongoClient
 except ModuleNotFoundError:
@@ -16,7 +17,8 @@ def setup_mongo(mongo_host, mongo_port):
   db = mongo.compliance
   cis_bm_metadata = db.cis_benchmark_static_metadata_col
   account_list = db.aws_accounts_col
-  findings = db.findings_col
+  findings_col_name = 'findings_col_' + date.today().strftime("%Y_%m")
+  findings = db[findings_col_name]
   compensating_controls = db.compensating_controls_col
   return({
     'cis_bm_metadata': cis_bm_metadata,
