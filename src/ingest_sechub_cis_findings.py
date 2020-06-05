@@ -61,10 +61,11 @@ generator_id_filter = {
 ]}
 findings_filter.update(generator_id_filter)
 
+two_days_ago = date.today() - timedelta(days=2)
 yesterday = date.today() - timedelta(days=1)
+today = date.today()
 tomorrow = date.today() + timedelta(days=1)
-updated_at_start = yesterday.isoformat()
-updated_at_end = tomorrow.isoformat()
+
 updated_at_filter_1 = {
   'UpdatedAt': [{
     'DateRange': {
@@ -73,14 +74,18 @@ updated_at_filter_1 = {
      }
    }]
 }
+
+updated_at_start = yesterday.isoformat()
+updated_at_end = tomorrow.isoformat()
+
 updated_at_filter_2 = {
   'UpdatedAt': [{
     'Start': updated_at_start,
     'End': updated_at_end,
    }]
 }
-findings_filter.update(updated_at_filter_1)
 
+findings_filter.update(updated_at_filter_1)
 
 def initial_db_populate(key_array, collection):
   logging.debug('Populating DB with Findings MetaData')
