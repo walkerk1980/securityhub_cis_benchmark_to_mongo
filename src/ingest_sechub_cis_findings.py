@@ -48,7 +48,7 @@ possible_finding_keys = ['SchemaVersion', 'Id', 'ProductArn', 'GeneratorId', 'Aw
 ]
 finding_metadata_we_care_about = ['Severity', 'Title','Description','Remediation', 'GeneratorId']
 # finding_keys_we_care_about = ['AwsAccountId', 'FirstObservedAt','LastObservedAt', 'Severity', 'Title','Description','Remediation','Compliance','RecordState', 'GeneratorId']
-finding_status_keys = ['AwsAccountId', 'LastObservedAt', 'UpdatedAt', 'Compliance', 'GeneratorId', 'Severity']
+finding_status_keys = ['AwsAccountId', 'FirstObservedAt', 'LastObservedAt', 'CreatedAt', 'UpdatedAt', 'Compliance', 'GeneratorId', 'Severity']
 
 findings_filter = {}
 
