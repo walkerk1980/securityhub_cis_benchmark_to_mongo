@@ -3,6 +3,7 @@ import json
 import sys
 from datetime import date
 from datetime import timedelta
+from random import randrange
 import argparse
 import logging
 import os
@@ -23,10 +24,12 @@ argparser.add_argument('-r','--region', nargs='?', const='NO', default=region, h
 argparser.add_argument('-d', '--debug', nargs='?', const='NO', help='Debug log mode. WARNING!!! Log file can be very large!')
 argparser.add_argument('-H', '--host', nargs='?', const='NO', default=mongo_host, help='Mongo Host')
 argparser.add_argument('-P', '--port', nargs='?', const='NO', default=mongo_port, help='Mongo Port')
+argparser.add_argument('-s', '--sanitize-accounts', nargs='?', const='NO', help='replace all account numbers in db with random garbage')
+argparser.add_argument('-S', '--yes-i-am-sure', nargs='?', const='NO', help='YES I\'M SURE!!!')
 args = argparser.parse_args()
 
 if args.debug:
-    logging.basicConfig(format = '%(asctime)s %(name)s %(levelname)s %(message)s', filename = 'ingestor.log', filemode='w', level = logging.DEBUG)
+  logging.basicConfig(format = '%(asctime)s %(name)s %(levelname)s %(message)s', filename = 'ingestor.log', filemode='w', level = logging.DEBUG)
 
 collections = setup_mongo(mongo_host, mongo_port)
 
@@ -34,6 +37,19 @@ cis_bm_metadata = collections.get('cis_bm_metadata')
 account_list = collections.get('account_list')
 findings_col = collections.get('findings')
 compensating_controls = collections.get('compensating_controls')
+
+def sanitize_account_numbers():
+  print('Sanitizing Accounts...')
+  for account in account_list.find():
+    rand_num = randrange(111111111111,999999999999)
+    rand_num = str(rand_num)
+    account_list.update({'AwsAccountId': account.get('AwsAccountId') }, {'AwsAccountId': rand_num})
+    findings_col.update({'AwsAccountId': account.get('AwsAccountId') }, {'AwsAccountId': rand_num})
+    print('New AwsAccountId: {0}'.format(rand_num))
+  exit(0)
+
+if args.sanitize_accounts and args.yes_i_am_sure:
+  sanitize_account_numbers()
 
 session = boto3.Session(region_name=args.region)
 
